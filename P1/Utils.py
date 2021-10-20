@@ -2,11 +2,17 @@
 # -*- coding: utf-8 -*-
 """
 @author: Carlos M. Alaíz
+
+Color changes made by: José Antonio Álvarez
 """
 import numpy as np
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, accuracy_score
 from matplotlib import pyplot as plt, colors, lines
 from sklearn.linear_model import LinearRegression, Perceptron, Ridge
+
+# For coloring (https://coolors.co/4effef-f6ae2d-f26419-6f8f72-504b43)
+c1 = '#4EFFEF'
+c2 = '#F6AE2D'
 
 def plot_dataset(x, y):
     if (len(x.shape) == 1):
@@ -102,9 +108,9 @@ def plot_dataset_clas(x, y):
     else:
         if (len(np.unique(y) == 2)):
             ind = y == 1
-            plt.scatter(x[ind, 0], x[ind, 1], c="b", zorder=100)
+            plt.scatter(x[ind, 0], x[ind, 1], c=c1, zorder=100)
             ind = y != 1
-            plt.scatter(x[ind, 0], x[ind, 1], c="r", zorder=100)
+            plt.scatter(x[ind, 0], x[ind, 1], c=c2, zorder=100)
         plt.xlabel("$x_1$")
         plt.ylabel("$x_2$")
 
@@ -432,16 +438,16 @@ def plot_krr_coefficients(model, label_gap=5):
     plt.xticks(pos[::label_gap], labels[::label_gap])
     plt.title("Dual Coefficients")
 
-def plot_svc(x, y, model, n_points=151, plot_slack=False):
-    alpha = 0.3
-    col_1 = np.array([31, 119, 180]) / 255
-    col_2 = np.array([214, 39, 40]) / 255
+def plot_svc(x, y, model, n_points=151, plot_slack=False, plot_support_vectors=True):
+    alpha = 0.2
+    col_2 = np.array([78, 255, 239]) / 255
+    col_1 = np.array([246, 174, 45]) / 255
 
     ind = y != 1
-    plt.scatter(x[ind, 0], x[ind, 1], c="r", s=30, zorder=100)
+    plt.scatter(x[ind, 0], x[ind, 1], c=c1, s=30, zorder=100)
     ind = y == 1
-    plt.scatter(x[ind, 0], x[ind, 1], c="b", s=30, zorder=100)
-
+    plt.scatter(x[ind, 0], x[ind, 1], c=c2, s=30, zorder=100)
+    
     lims = plt.axis("equal")
 
     xx = np.linspace(lims[0] - 1.1 * (lims[1] - lims[0]), lims[1] + 1.1 * (lims[1] - lims[0]), n_points)
@@ -450,15 +456,20 @@ def plot_svc(x, y, model, n_points=151, plot_slack=False):
     xy = np.vstack([xx.ravel(), yy.ravel()]).T
     zz = model.decision_function(xy).reshape(xx.shape)
 
-    plt.pcolormesh(xx, yy, np.sign(zz), shading="auto", cmap=colors.ListedColormap([alpha * col_2 + 1 - alpha, alpha * col_1 + 1 - alpha]))
-    plt.contour(xx, yy, zz, colors=["r", "k", "b"], levels=[-1, 0, 1], linestyles=["--", "-", "--"], linewidths=[2, 4, 2])
+    plt.pcolormesh(xx, yy, np.sign(zz), shading="auto", 
+                   cmap=colors.ListedColormap([alpha * col_2 + 1 - alpha, alpha * col_1 + 1 - alpha]))
+    plt.contour(xx, yy, zz, colors=[c1, "k", c2], levels=[-1, 0, 1], linestyles=["--", "-", "--"], linewidths=[2, 4, 2])
     plt.legend(handles=[
-        lines.Line2D([], [], color="r", linestyle="--", label="Support Hyp. $-1$"),
+        lines.Line2D([], [], color=c1, linestyle="--", label="Support Hyp. $-1$"),
         lines.Line2D([], [], color="k", linestyle="-", label="Sepparating Hyp."),
-        lines.Line2D([], [], color="b", linestyle="--", label="Support Hyp. $+1$")
+        lines.Line2D([], [], color=c2, linestyle="--", label="Support Hyp. $+1$")
     ])
-
-    plt.scatter(model.support_vectors_[:, 0], model.support_vectors_[:, 1], s=100, linewidth=3, facecolors="none", edgecolors="k")
+    
+    # Plot black circles around the support vectors
+    if plot_support_vectors:
+        plt.scatter(model.support_vectors_[:, 0],
+                    model.support_vectors_[:, 1],
+                    s=100, linewidth=3, facecolors="none", edgecolors="k")
 
     if (plot_slack):
         w = model.coef_[0]
@@ -466,8 +477,8 @@ def plot_svc(x, y, model, n_points=151, plot_slack=False):
         nws = np.linalg.norm(w)**2
         for i in model.support_:
             p = x[i, :] - (w @ x[i, :] + b - y[i]) / nws * w
-            style = "b:" if y[i] == 1 else "r:"
-            plt.plot([p[0], x[i, 0]], [p[1], x[i, 1]], style)
+            c = c2 if y[i] == 1 else c1
+            plt.plot([p[0], x[i, 0]], [p[1], x[i, 1]], ":", color=c)
 
 
     plt.axis(lims)
