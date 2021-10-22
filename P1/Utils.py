@@ -438,7 +438,8 @@ def plot_krr_coefficients(model, label_gap=5):
     plt.xticks(pos[::label_gap], labels[::label_gap])
     plt.title("Dual Coefficients")
 
-def plot_svc(x, y, model, n_points=151, plot_slack=False, plot_support_vectors=True):
+def plot_svc(x, y, model, n_points=151, plot_slack=False, 
+             plot_support_vectors=True):
     alpha = 0.2
     col_2 = np.array([78, 255, 239]) / 255
     col_1 = np.array([246, 174, 45]) / 255
@@ -486,6 +487,50 @@ def plot_svc(x, y, model, n_points=151, plot_slack=False, plot_support_vectors=T
     plt.ylabel("$x_2$")
     plt.title("SVM (%s, C=%.2g)" % (model.kernel, model.C))
 
+def plot_svc_animation_frame(x, y, ax, model, lims, subtitle, n_points=151, alpha=0.2):
+    alpha = 0.2
+    col_2 = np.array([78, 255, 239]) / 255
+    col_1 = np.array([246, 174, 45]) / 255
+    
+    ind = y != 1
+    ax.scatter(x[ind, 0], x[ind, 1], c=c1, s=30, zorder=100)
+    ind = y == 1
+    ax.scatter(x[ind, 0], x[ind, 1], c=c2, s=30, zorder=100)
+    
+    if lims == None:
+        lims = ax.axis("equal")
+    
+    xx = np.linspace(lims[0] - 1.1 * (lims[1] - lims[0]),
+                     lims[1] + 1.1 * (lims[1] - lims[0]),
+                     n_points)
+    yy = np.linspace(lims[2], lims[3], n_points)
+    yy, xx = np.meshgrid(yy, xx)
+    xy = np.vstack([xx.ravel(), yy.ravel()]).T
+    zz = model.decision_function(xy).reshape(xx.shape)
+
+    ax.pcolormesh(xx, yy, np.sign(zz), shading="auto", 
+                   cmap=colors.ListedColormap([alpha * col_2 + 1 - alpha,
+                                               alpha * col_1 + 1 - alpha]))
+    ax.contour(xx, yy, zz, colors=[c1, "k", c2], levels=[-1, 0, 1],
+               linestyles=["--", "-", "--"], linewidths=[2, 4, 2])
+    
+    ax.legend(handles=[
+        lines.Line2D([], [], color=c1, linestyle="--", label="Support Hyp. $-1$"),
+        lines.Line2D([], [], color="k", linestyle="-", label="Sepparating Hyp."),
+        lines.Line2D([], [], color=c2, linestyle="--", label="Support Hyp. $+1$")
+    ])
+    
+    # Plot black circles around the support vectors
+    ax.scatter(model.support_vectors_[:, 0],
+                model.support_vectors_[:, 1],
+                s=100, linewidth=3, facecolors="none", edgecolors="k")
+
+    ax.axis(lims)
+    ax.set_xlabel("$x_1$")
+    ax.set_ylabel("$x_2$")
+    ax.set_title(subtitle)
+    return lims    
+    
 def plot_all_linear_separators(x, y, plot_best=False, n_points=51):
     ang_vec = np.linspace(0, 2 * np.pi, n_points)
     b_vec = np.linspace(-5, 5, n_points)
