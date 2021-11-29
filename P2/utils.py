@@ -2,6 +2,7 @@ import numpy as np
 import scipy as sp
 from scipy import stats
 import matplotlib.pyplot as plt
+import pandas as pd
 
 def createDataSet(n,model,ymargin,noise=None,output_boundary=False):
     """
@@ -102,6 +103,68 @@ def plotData(x,y,c,style0,style1,title=''):
     plt.scatter(x[c==1],y[c==1],**style1)
     plt.grid(True)
     plt.axis([x.min()-0.2, x.max()+0.2, y.min()-0.2, y.max()+0.2])
+    plt.xlabel("X")
+    plt.ylabel("Y")
+    plt.title(title)
+
+def createRegressionDataSet(total_points):
+    def createUnifDataset(n):
+        x = np.linspace(0,50, num=n)
+        n_5 = int(n/5)
+
+        y1 = np.random.uniform(10,15,n_5)
+        y2 = np.random.uniform(20,25,n_5)
+        y3 = np.random.uniform(0,5,n_5)
+        y4 = np.random.uniform(30,32,n_5)
+        y5 = np.random.uniform(13,17,n_5)
+
+        y = np.concatenate((y1,y2,y3,y4,y5))
+        y = y[:,None]
+        return x.reshape(-1,1), y
+    Xtrain, ytrain = createUnifDataset( int(total_points * 0.8) )
+    Xtest, ytest = createUnifDataset( int(total_points * 0.2) )
+    return Xtrain, ytrain, Xtest, ytest
+
+def plotRegressionData(x,y,title=''):
+    """
+    La función, *plotData*, la usaremos para dibujar los datos. Sus argumentos son:
+        - *x*, coordenada x de los puntos
+        - *y*, coordenada y de los puntos
+        - *c*, clase de los puntos
+        - *style0*, estilo con el que pintamos los puntos de la clase 0
+        - *style1*, estilo con el que pintamos los puntos de la clase 1
+        - *title*, título para el gráfico
+    """
+    plt.scatter(x, y, c='#0000FF')
+    plt.grid(True)
+    plt.axis([x.min()-0.2, x.max()+0.2, -1, 33])
+    plt.xlabel("X")
+    plt.ylabel("Y")
+    plt.title(title)
+    plt.show()
+
+def plotRegressionModel(x, y, clf, title=""):
+    """
+    La función *plotModel* la usaremos para dibujar el resultado de un clasificador sobre el conjunto de datos. Sus argumentos son:
+        - *x*, coordenada x de los puntos
+        - *y*, coordenada y de los puntos
+        - *c*, clase de los puntos, si se pasa None, entonces considera que x e y son la frontera real de decisión y la muestra con plot
+        - *clf*, el clasificador
+        - *title*, título para el gráfico
+    """
+    x_min, x_max = x.min() - .2, x.max() + .2
+    y_min, y_max = -1, 33
+    
+    predictions = clf.predict(x)
+
+    colors = ['#0000FF', '#FF0000']
+    
+    plt.scatter(x, y, c=colors[0])
+    plt.plot(x, predictions, c=colors[1], linewidth=3)
+
+    plt.gca().set_xlim(x_min, x_max)
+    plt.gca().set_ylim(y_min, y_max)
+    plt.grid(True)
     plt.xlabel("X")
     plt.ylabel("Y")
     plt.title(title)
