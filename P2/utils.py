@@ -1,8 +1,11 @@
+#from _typeshed import SupportsLenAndGetItem
 import numpy as np
 import scipy as sp
 from scipy import stats
 import matplotlib.pyplot as plt
 import pandas as pd
+
+### CLASIFICACION
 
 def createDataSet(n,model,ymargin,noise=None,output_boundary=False):
     """
@@ -45,7 +48,7 @@ def createDataSet(n,model,ymargin,noise=None,output_boundary=False):
     else:
         return x, y, (c*1).ravel()
 
-def plotModel(x,y,clase,clf,title=""):
+def plotModel(x,y,clase,clf,title="",fewer_estimators=None):
     """
     La función *plotModel* la usaremos para dibujar el resultado de un clasificador sobre el conjunto de datos. Sus argumentos son:
         - *x*, coordenada x de los puntos
@@ -55,14 +58,17 @@ def plotModel(x,y,clase,clf,title=""):
         - *title*, título para el gráfico
     """
     from matplotlib.colors import ListedColormap
-    
+
     x_min, x_max = x.min() - .2, x.max() + .2
     y_min, y_max = y.min() - .2, y.max() + .2
     hx = (x_max - x_min)/100.
     hy = (y_max - y_min)/100.
     xx, yy = np.meshgrid(np.arange(x_min, x_max, hx), np.arange(y_min, y_max, hy))
 
-    if hasattr(clf, "decision_function"):
+    if fewer_estimators is not None:
+        z = clf.predict_with_fewer_estimators(np.c_[xx.ravel(), yy.ravel()],
+                                              fewer_estimators)
+    elif hasattr(clf, "decision_function"):
         z = clf.decision_function(np.c_[xx.ravel(), yy.ravel()])
     elif hasattr(clf, "predict_proba"):
         z = clf.predict_proba(np.c_[xx.ravel(), yy.ravel()])[:, 1]
@@ -107,6 +113,8 @@ def plotData(x,y,c,style0,style1,title=''):
     plt.ylabel("Y")
     plt.title(title)
 
+### REGRESION
+
 def createRegressionDataSet(total_points):
     def createUnifDataset(n):
         x = np.linspace(0,50, num=n)
@@ -141,7 +149,6 @@ def plotRegressionData(x,y,title=''):
     plt.xlabel("X")
     plt.ylabel("Y")
     plt.title(title)
-    plt.show()
 
 def plotRegressionModel(x, y, clf, title=""):
     """
