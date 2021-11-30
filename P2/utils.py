@@ -128,7 +128,7 @@ def createRegressionDataSet(total_points):
 
         y = np.concatenate((y1,y2,y3,y4,y5))
         y = y[:,None]
-        return x.reshape(-1,1), y
+        return x.reshape(-1,1), y.reshape(1,-1)[0]
     Xtrain, ytrain = createUnifDataset( int(total_points * 0.8) )
     Xtest, ytest = createUnifDataset( int(total_points * 0.2) )
     return Xtrain, ytrain, Xtest, ytest
@@ -138,9 +138,6 @@ def plotRegressionData(x,y,title=''):
     La función, *plotData*, la usaremos para dibujar los datos. Sus argumentos son:
         - *x*, coordenada x de los puntos
         - *y*, coordenada y de los puntos
-        - *c*, clase de los puntos
-        - *style0*, estilo con el que pintamos los puntos de la clase 0
-        - *style1*, estilo con el que pintamos los puntos de la clase 1
         - *title*, título para el gráfico
     """
     plt.scatter(x, y, c='#0000FF')
@@ -155,7 +152,6 @@ def plotRegressionModel(x, y, clf, title=""):
     La función *plotModel* la usaremos para dibujar el resultado de un clasificador sobre el conjunto de datos. Sus argumentos son:
         - *x*, coordenada x de los puntos
         - *y*, coordenada y de los puntos
-        - *c*, clase de los puntos, si se pasa None, entonces considera que x e y son la frontera real de decisión y la muestra con plot
         - *clf*, el clasificador
         - *title*, título para el gráfico
     """
@@ -175,6 +171,40 @@ def plotRegressionModel(x, y, clf, title=""):
     plt.xlabel("X")
     plt.ylabel("Y")
     plt.title(title)
+
+def plotRegressionModelWithResiduals(x, y, clf, title=""):
+    """
+    La función *plotModel* la usaremos para dibujar el resultado de un clasificador sobre el conjunto de datos. Sus argumentos son:
+        - *x*, coordenada x de los puntos
+        - *y*, coordenada y de los puntos
+        - *clf*, el clasificador
+        - *title*, título para el gráfico
+    """
+    fig, axs = plt.subplots(1, 2, figsize=(15, 5))
+    colors = ['#0000FF', '#FF0000', '#00FF00']
+
+    predictions = clf.predict(x)
+    residuals = clf.loss.residuals(y, predictions)
+    x_min, x_max = x.min() - .2, x.max() + .2
+    y_min, y_max = residuals.min() - 0.2, 33
+    
+    axs[0].scatter(x, y, c=colors[0], label="Training data")
+    axs[0].plot(x, predictions, c=colors[1], linewidth=3, label="Predictions")
+    axs[0].set_xlim(x_min, x_max)
+    axs[0].set_ylim(y_min, y_max)
+    axs[0].legend()
+    axs[0].grid(True)
+    axs[0].set_xlabel("X")
+    axs[0].set_ylabel("Y")
+
+    axs[1].scatter(x, residuals, c=colors[2], label = "Residuals")
+    axs[1].legend()
+    axs[1].grid(True)
+    axs[1].set_xlim(x_min, x_max)
+    axs[1].set_ylim(y_min, y_max)
+    axs[1].set_xlabel("X")
+    
+    fig.suptitle(title)
 
 
 ########### IMPLEMENTACION DE BAGGING (RANDOM FOREST)
