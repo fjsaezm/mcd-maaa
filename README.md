@@ -1,6 +1,5 @@
 # mcd-maaa
 
-# mcd-pdge
 
 Repositorio para la asignatura Métodos Avanzados en Aprendizaje Automático del Máster en Ciencias de Datos de la Universidad Autónoma de Madrid.
 
@@ -14,7 +13,7 @@ En esta asignatura, realizamos 3 prácticas:
 
 ---
 
-# MSc-pdge
+# MSc-maaa
 
 Repository for the subject "Métodos avanzados en aprendizaje automático" (Advanced Methods in Machine Learning) at the Data Science Masters Degree at Universidad Autónoma de Madrid.
 
