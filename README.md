@@ -5,11 +5,11 @@ Repositorio para la asignatura Métodos Avanzados en Aprendizaje Automático del
 
 En esta asignatura, realizamos 3 prácticas:
 
-- Práctica $1$ en la que realizamos una implementación de la técnica de ajustado de **SVMs** : **SMO** (Carpeta [P1](https://github.com/fjsaezm/mcd-maaa/tree/main/P1))
+- Práctica 1 en la que realizamos una implementación de la técnica de ajustado de **SVMs** : **SMO** (Carpeta [P1](https://github.com/fjsaezm/mcd-maaa/tree/main/P1))
 
-- Práctica $2$, en la que implementamos de forma genérica el algoritmo teórico de **eliminación de variables** y realizamos también una implementación de **Gradient Boosting** (Carpeta [P2](https://github.com/fjsaezm/mcd-maaa/tree/main/P2))
+- Práctica 2, en la que implementamos de forma genérica el algoritmo teórico de **eliminación de variables** y realizamos también una implementación de **Gradient Boosting** (Carpeta [P2](https://github.com/fjsaezm/mcd-maaa/tree/main/P2))
 
-- Práctica $3$, en la que realizamos un estudio preliminar de unos datos de alta dimensión y a continuación estudiamos cómo afecta aplicar tanto **PCA** y un clústering posterior, como **LDA**,  así como aplicar **LDA** sobre las componentes principales obtenidas por **PCA** (Carpeta [P3](https://github.com/fjsaezm/mcd-maaa/tree/main/P3))
+- Práctica 3, en la que realizamos un estudio preliminar de unos datos de alta dimensión y a continuación estudiamos cómo afecta aplicar tanto **PCA** y un clústering posterior, como **LDA**,  así como aplicar **LDA** sobre las componentes principales obtenidas por **PCA** (Carpeta [P3](https://github.com/fjsaezm/mcd-maaa/tree/main/P3))
 
 ---
 
